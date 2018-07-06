@@ -101,7 +101,8 @@ async function getContent(title) {
   const json = await response.json();
   const page = Object.values(json.query.pages)[0];
   console.info('Page', page)
-  return { 
+  return {
+    url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(page.title),
     title: page.title,
     content: simpleHtmlToText(page.extract.trim())
   };
@@ -168,7 +169,7 @@ function speakParagraph(text) {
 }
 
 async function talkAboutLocation(article) {
-  state.status = 'Reading about ' + article.title;
+  state.status = `Reading about <a href="${article.url}" target="_blank">${html(article.title)}</a>`;
   render();
   return speak(article.content);
 }
@@ -232,7 +233,7 @@ function render() {
   $('html_play').style.display = display(!state.loading && state.playing && state.paused);
   $('html_next').style.display = display(!state.loading && state.playing);
   $('html_spinner').style.display = display(state.loading);
-  $('html_title').textContent = state.status;
+  $('html_title').innerHTML = state.status;
 }
 
 function simpleHtmlToText(html) {
@@ -264,6 +265,12 @@ function display(bool) {
   return bool ? 'block' : 'none';
 }
 
+function html(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function initMap() {
   map = new google.maps.Map($('map'), {
     center: {lat: -34.397, lng: 150.644},
@@ -283,4 +290,4 @@ function initMap() {
 onunload = function() {
   window.speechSynthesis.cancel();
 }
-navigator.serviceWorker.register("/sw.js")
+navigator.serviceWorker.register("/sw.js");
