@@ -189,7 +189,7 @@ async function next() {
   console.info('Starting session');
   state.playing = true;
   state.loading = true;
-  state.status = 'Finding something interesting to read.'
+  state.status = 'Finding something interesting to read. I\'ll keep checking as you move.'
   render();
   try {
     const article = await getArticleForLocation();
