@@ -1,0 +1,15 @@
+{
+    "name": "Road Trip",
+    "short_name": "Road Trip",
+    "start_url": "https://roadtrip.glitch.me/",
+    "icons": [
+        {
+            "src": "https://cdn.glitch.com/93aac3ad-5e37-4ee6-8bf0-133d676ba436%2Flogo.png?1530855990742",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#3f51b5",
+    "background_color": "#ffffff",
+    "display": "standalone"
+}

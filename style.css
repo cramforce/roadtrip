@@ -1,0 +1,9 @@
+/* CSS files add styling rules to your content */
+
+.page-content {
+  padding: 16px;
+}
+
+#map {
+  height: 300px
+}

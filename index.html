@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Road Trip</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>if(location.protocol == 'http:') location.protocol = 'https:';/*Glitch Y U NO DO THIS*/</script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdK063YKCSao5XLh0B0h7oD2Ky3WmYV7w&callback=initMap">
+    </script>
+    <script src="script.js"></script>
+    <link href="/manifest.json" rel="manifest">
+    <meta name="theme-color" content="#3f51b5">
+  </head>  
+  
+<body>
+<!-- Always shows a header, even in smaller screens. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">Road Trip</span>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation. We hide it in small screens. -->
+      <nav class="mdl-navigation mdl-layout--large-screen-only">
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+        <a class="mdl-navigation__link" href="">Link</a>
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Road Trip</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+      <a class="mdl-navigation__link" href="">Link</a>
+    </nav>
+  </div>
+  <main class="mdl-layout__content">
+    <div class="page-content">
+      <h3 id="html_title">This app will read you about the places and points of interest you drive by.</h3>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" onclick="start()" id="html_start">
+        Start the road trip
+      </button>
+      <div class="mdl-spinner mdl-js-spinner is-active" style="display:none" id="html_spinner"></div>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="pause()" id="html_pause"  style="display:none">
+        Pause
+      </button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="play()" id="html_play"  style="display:none">
+        Play
+      </button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" onclick="forward()" id="html_next"  style="margin-top:4px;display:none">
+        Next
+      </button>
+      <hr>
+      <div id="map"></div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
