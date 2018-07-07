@@ -172,6 +172,10 @@ function speakParagraph(text) {
 async function talkAboutLocation(article) {
   state.status = `Reading about <a href="${article.url}" target="_blank">${html(article.title)}</a>`;
   render();
+  gtag('event', 'screen_view', {
+    'app_name': 'Road trip',
+    'screen_name' : 'Article ' + article.title
+  });
   return speak(article.content);
 }
 
@@ -192,6 +196,10 @@ async function next() {
   state.loading = true;
   state.status = 'Finding something interesting to read. I\'ll keep checking as you move.'
   render();
+  gtag('event', 'screen_view', {
+    'app_name': 'Road trip',
+    'screen_name' : 'Next',
+  });
   try {
     const article = await getArticleForLocation();
     if (!article) {
