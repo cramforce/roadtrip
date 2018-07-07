@@ -4,10 +4,9 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.0.0-beta.0/
 // workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug);
 
 workbox.routing.registerRoute(
-  /^https:\/\/fonts\.googleapis\.com\/.+$/,
+  /^https:\/\/((\w+)\.googleapis\.com|www\.googletagmanager\.com|code\.getmdl\.io)\/.+$/,
   workbox.strategies.staleWhileRevalidate({
-    // Use a custom cache name
-    cacheName: 'font-cache',
+    cacheName: 'google-cache',
     plugins: [
       // Allow opaque responses
       new workbox.cacheableResponse.Plugin({
@@ -19,10 +18,31 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   // Cache immutable files forever
-  /^https:\/\/code\.getmdl\.io\//,
+  /^https:\/\/roadtrip-api\./,
   // Use the cache if it's available
   workbox.strategies.cacheFirst({
-    cacheName: 'mdl-cache',
+    cacheName: 'api-cache',
+    plugins: [
+      new workbox.expiration.Plugin({
+        // Cache for a maximum of 30 days
+        maxAgeSeconds: 30 * 24 * 60 * 60,
+      })
+    ],
+  })
+);
+
+workbox.routing.registerRoute(
+  // Cache immutable files forever
+  /^https:\/\/en\.wikipedia\.org\//,
+  // Use the cache if it's available
+  workbox.strategies.cacheFirst({
+    cacheName: 'wiki-cache',
+    plugins: [
+      new workbox.expiration.Plugin({
+        // Cache for a maximum of 2 days
+        maxAgeSeconds: 2 * 24 * 60 * 60,
+      })
+    ],
   })
 );
 
