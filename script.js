@@ -138,6 +138,7 @@ async function speak(text) {
 function speakParagraph(text) {
 	var utterance = new SpeechSynthesisUtterance();
   utterance.text = text + '.';
+  utterance.lang = 'en';
   console.info('Start speaking', utterance.text);
   let interval;
   return new Promise(resolve => {
