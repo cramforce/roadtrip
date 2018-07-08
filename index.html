@@ -19,7 +19,10 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'UA-121987888-1');
+      gtag('config', 'UA-121987888-1', {
+        cookie_domain: document.domain,
+        'app_name': 'Road trip'
+      });
     </script>
 
     <script src="script.js"></script>
