@@ -7,7 +7,7 @@ const state = {
   loading: false,
   paused: false,
 };
-const pollSeconds = 60;
+const pollSeconds = 30;
 
 const seen = {};
 
@@ -35,7 +35,7 @@ function startWatchLocation() {
 }
 
 async function geoCode(position) {
-  const response = await fetch('https://roadtrip-api.glitch.me/geocode?latlng='
+  const response = await fetchWithTimeout('https://roadtrip-api.glitch.me/geocode?latlng='
       + position.coords.latitude + ',' + position.coords.longitude);
   if (response.ok) {
     const json = await response.json();
@@ -70,7 +70,7 @@ function processResult(results) {
 }
 
 async function searchWikipedia(term) {
-  const response = await fetch('https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=1&search='
+  const response = await fetchWithTimeout('https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=1&search='
       + encodeURIComponent(term));
   if (!response.ok) {
     console.error('Wikipedia call failed', response)
@@ -93,7 +93,7 @@ async function searchWikipedia(term) {
 
 async function getContent(title) {
   console.info('Getting content');
-  const response = await fetch('https://en.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles='
+  const response = await fetchWithTimeout('https://en.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles='
       + encodeURIComponent(title));
   if (!response.ok) {
     console.error('Wikipedia content call failed', response)
@@ -303,3 +303,14 @@ onunload = function() {
   window.speechSynthesis.cancel();
 }
 navigator.serviceWorker.register("/sw.js");
+
+function timeout(time, message) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error('Timeout: ' + message)), time);
+  })
+}
+
+function fetchWithTimeout(url, paras) {
+  return Promise.race([fetch(url, paras), 
+                       timeout(15 * 1000, 'Fetch timed out for ' + url)]);
+}
