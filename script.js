@@ -1,4 +1,5 @@
 let position;
+let manualPosition = false;
 let map;
 let locationData;
 let cancelSpeaking;
@@ -24,10 +25,12 @@ const testData = {"results":[{"address_components":[{"long_name":"2943","short_n
 function startWatchLocation() {
   return new Promise(resolve => {
     navigator.geolocation.watchPosition(pos => {
-      console.info('Updated position', pos);
-      position = pos;
-      if (map) {
-        map.setCenter({lat: pos.coords.latitude, lng: pos.coords.longitude});
+      if (!manualPosition) {
+        console.info('Updated position', pos);
+        position = pos;
+        if (map) {
+          map.setCenter({lat: pos.coords.latitude, lng: pos.coords.longitude});
+        }
       }
       resolve();
     });
@@ -128,8 +131,10 @@ async function getArticleForLocation() {
 }
 
 async function speak(text) {
-  // Mobile Chrome doesn't like long texts, so we just do one.
-  const paras = text.split(/\.[\s+\n]/).filter(p => p.trim());
+  // Mobile Chrome doesn't like long texts, so we just do one at a time.
+  // Make a sentence end a paragraph end. \w\w to not match e.g.
+  text = text.replace(/(\w\w\.)/, '$1\n')
+  const paras = text.split(/\.\n/).filter(p => p.trim());
   for (let p of paras) {
     await speakParagraph(p);
     if (cancelSpeaking) {
@@ -256,6 +261,8 @@ function simpleHtmlToText(html) {
   let text = div.textContent;
   text = text.replace(/(.)\n/g, '$1.\n');
   // Remove stuff in parantheses. Nobody wants to hear that stuff.
+  // This isn't how you pass the Google interview.
+  // But it is technically O(n)
   for (let i = 0; i < 10; i++) {
     text = text.replace(/\([^\)]+\)/g, '');
   }
@@ -296,6 +303,7 @@ function initMap() {
       }
     };
     console.info('Map position', position);
+    manualPosition = true;
   });
 }
 
