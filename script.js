@@ -92,6 +92,7 @@ async function searchWikipedia(term) {
 }
 
 async function getContent(title) {
+  console.info('Getting content');
   const response = await fetch('https://en.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles='
       + encodeURIComponent(title));
   if (!response.ok) {
@@ -109,10 +110,13 @@ async function getContent(title) {
 }
 
 async function getArticleForLocation() {
+  console.info('Geo coding');
   const locationResults = processResult(await geoCode(position));
+  console.info('Location results retrieved', locationResults.length);
   let result;
   while (result = locationResults.find(r => !seen[r.formatted_address])) {
     seen[result.formatted_address] = true;
+    console.info('Searching for', result.formatted_address);
     const title = await searchWikipedia(result.formatted_address);
     if (!title) {
       continue;
@@ -199,6 +203,7 @@ async function next() {
     'screen_name' : 'Next',
   });
   try {
+    console.info('Finding article.');
     const article = await getArticleForLocation();
     if (!article) {
       console.info('Did not find article');
