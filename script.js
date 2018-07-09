@@ -125,7 +125,7 @@ async function getArticleForLocation() {
 
 async function speak(text) {
   // Mobile Chrome doesn't like long texts, so we just do one.
-  const paras = text.split(/\./).filter(p => p.trim());
+  const paras = text.split(/\.[\s+\n]/).filter(p => p.trim());
   for (let p of paras) {
     await speakParagraph(p);
     if (cancelSpeaking) {
