@@ -3,6 +3,7 @@ let manualPosition = false;
 let map;
 let locationData;
 let cancelSpeaking;
+let skipThisParagraph;
 const state = {
   playing: false,
   loading: false,
@@ -131,20 +132,30 @@ async function getArticleForLocation() {
 }
 
 async function speak(text) {
-  // Mobile Chrome doesn't like long texts, so we just do one at a time.
+  // Mobile Chrome doesn't like long texts, so we just do one sentence at a time.
   // Make a sentence end a paragraph end. \w\w to not match e.g.
-  text = text.replace(/(\w\w\.)/, '$1\n')
-  const paras = text.split(/\.\n/).filter(p => p.trim());
+  const paras = text.split(/\n/).filter(p => p.trim());
   for (let p of paras) {
-    await speakParagraph(p);
-    if (cancelSpeaking) {
-      cancelSpeaking = false;
-      return;
+    p = p.replace(/(\w\w\.)/, '$1\n')
+    const sentences = p.split(/\.\n/).filter(e => e.trim());
+    for (let sentence of sentences) {
+      await speakSentence(sentence);
+      if (cancelSpeaking) {
+        cancelSpeaking = false;
+        console.info('Cancel speaking');
+        return;
+      }
+      if (skipThisParagraph) {
+        skipThisParagraph = false;
+        console.info('Skipping paragraph');
+        break; // Goes to next step in paras loop
+      }
     }
   }
+  
 }
 
-function speakParagraph(text) {
+function speakSentence(text) {
 	var utterance = new SpeechSynthesisUtterance();
   utterance.text = text + '.';
   utterance.lang = 'en';
@@ -244,11 +255,17 @@ function forward() {
   window.speechSynthesis.cancel();
 }
 
+function skipParagraph() {
+  skipThisParagraph = true;
+  window.speechSynthesis.cancel();
+}
+
 function render() {
   $('html_start').style.display = display(!state.playing);
   $('html_pause').style.display = display(!state.loading && state.playing && !state.paused);
   $('html_play').style.display = display(!state.loading && state.playing && state.paused);
   $('html_next').style.display = display(!state.loading && state.playing);
+  $('html_skip').style.display = display(!state.loading && state.playing);
   $('html_spinner').style.display = display(state.loading);
   $('html_title').innerHTML = state.status;
 }
