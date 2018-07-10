@@ -106,6 +106,7 @@ async function getContent(title) {
   const json = await response.json();
   const page = Object.values(json.query.pages)[0];
   console.info('Page', page)
+  seen[page.title] = true;
   return {
     url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(page.title),
     title: page.title,
@@ -128,7 +129,30 @@ async function getArticleForLocation() {
     console.info('Title', title);
     return getContent(title);
   };
-  return null
+  return null;
+}
+
+async function getNearbyArticle() {
+  console.info('Finding nearby article');
+  const response = await fetchWithTimeout('https://en.m.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=geosearch&ggsradius=10000&ggsnamespace=0&ggslimit=50&formatversion=2&'
+      + 'ggscoord=' + encodeURIComponent(position.coords.latitude) + '%7C' + encodeURIComponent(position.coords.longitude));
+  if (!response.ok) {
+    console.error('Wikipedia nearby failed', response)
+    throw new Error('Wikipedia nearby is down');
+  }
+  const json = await response.json();
+  console.info('Nearby response', json);
+  const pages = json.query.pages;
+  for (let page of pages) {
+    const title = page.title;
+    if (seen[title]) {
+      continue;
+    }
+    seen[title] = true;
+    console.info('Title', title);
+    return getContent(title);
+  }
+  return null;
 }
 
 async function speak(text) {
@@ -220,7 +244,11 @@ async function next() {
   });
   try {
     console.info('Finding article.');
-    const article = await getArticleForLocation();
+    let article = await getArticleForLocation();
+    if (!article) {
+      console.info('Did not find location article. Trying nearby.');
+      article = await getNearbyArticle();
+    }
     if (!article) {
       console.info('Did not find article');
       setTimeout(next, pollSeconds * 1000);
