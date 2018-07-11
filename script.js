@@ -228,6 +228,10 @@ async function start() {
   state.status = 'Finding your location.'
   render();
   const s = startWatchLocation();
+  $('toast').MaterialSnackbar.showSnackbar({
+    message: 'Please make sure your volume is turned up!',
+    timeout: 4000,
+  });
   await speak('Welcome to your road trip.\n\n');
   await s;
   next();
