@@ -216,8 +216,9 @@ function speakSentence(text) {
 async function talkAboutLocation(article) {
   state.status = `Reading about <a href="${article.url}" target="_blank">${html(article.title)}</a>`;
   render();
-  gtag('event', 'screen_view', {
-    'screen_name' : 'Article ' + article.title
+  gtag('config', 'UA-121987888-1', {
+    'page_title' : 'Article ' + article.title,
+    'page_path': '/article/' + encodeURIComponent(article.title),
   });
   return speak(article.content);
 }
@@ -243,8 +244,9 @@ async function next() {
   state.loading = true;
   state.status = 'Finding something interesting to read. I\'ll keep checking as you move.'
   render();
-  gtag('event', 'screen_view', {
-    'screen_name' : 'Next',
+  gtag('config', 'UA-121987888-1', {
+    'page_title' : 'Next',
+    'page_path': '/next/',
   });
   try {
     console.info('Finding article.');
