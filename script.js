@@ -231,7 +231,7 @@ async function start() {
   const s = startWatchLocation();
   $('toast').MaterialSnackbar.showSnackbar({
     message: 'Please make sure your volume is turned up!',
-    timeout: 4000,
+    timeout: 10000,
   });
   await speak('Welcome to your road trip.\n\n');
   await s;
