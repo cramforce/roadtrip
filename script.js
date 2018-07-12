@@ -248,7 +248,7 @@ async function next() {
   render();
   gtag('config', 'UA-121987888-1', {
     'page_title' : 'Next',
-    'page_path': '/next/',
+    'page_path': '/next/' + lang,
   });
   try {
     console.info('Finding article.');
