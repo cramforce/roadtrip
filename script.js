@@ -10,6 +10,7 @@ const state = {
   paused: false,
 };
 const pollSeconds = 30;
+let lang = 'en';
 
 const seen = {};
 
@@ -74,7 +75,7 @@ function processResult(results) {
 }
 
 async function searchWikipedia(term) {
-  const response = await fetchWithTimeout('https://en.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=1&search='
+  const response = await fetchWithTimeout('https://' + lang + '.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=1&search='
       + encodeURIComponent(term));
   if (!response.ok) {
     console.error('Wikipedia call failed', response)
@@ -97,7 +98,7 @@ async function searchWikipedia(term) {
 
 async function getContent(title) {
   console.info('Getting content');
-  const response = await fetchWithTimeout('https://en.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles='
+  const response = await fetchWithTimeout('https://' + lang + '.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles='
       + encodeURIComponent(title));
   if (!response.ok) {
     console.error('Wikipedia content call failed', response)
@@ -108,9 +109,10 @@ async function getContent(title) {
   console.info('Page', page)
   seen[page.title] = true;
   return {
-    url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(page.title),
+    url: 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(page.title),
     title: page.title,
-    content: simpleHtmlToText(page.extract.trim())
+    content: simpleHtmlToText(page.extract.trim()),
+    lang: lang
   };
 }
 
@@ -134,7 +136,7 @@ async function getArticleForLocation() {
 
 async function getNearbyArticle() {
   console.info('Finding nearby article');
-  const response = await fetchWithTimeout('https://en.m.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=geosearch&ggsradius=10000&ggsnamespace=0&ggslimit=50&formatversion=2&'
+  const response = await fetchWithTimeout('https://' + lang + '.m.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=geosearch&ggsradius=10000&ggsnamespace=0&ggslimit=50&formatversion=2&'
       + 'ggscoord=' + encodeURIComponent(position.coords.latitude) + '%7C' + encodeURIComponent(position.coords.longitude));
   if (!response.ok) {
     console.error('Wikipedia nearby failed', response)
@@ -155,7 +157,7 @@ async function getNearbyArticle() {
   return null;
 }
 
-async function speak(text) {
+async function speak(text, language) {
   // Mobile Chrome doesn't like long texts, so we just do one sentence at a time.
   // Make a sentence end a paragraph end. \w\w to not match e.g.
   const paras = text.split(/\n/).filter(p => p.trim());
@@ -163,7 +165,7 @@ async function speak(text) {
     p = p.replace(/(\w\w\.)/, '$1\n')
     const sentences = p.split(/\.\n/).filter(e => e.trim());
     for (let sentence of sentences) {
-      await speakSentence(sentence);
+      await speakSentence(sentence, language);
       if (cancelSpeaking) {
         cancelSpeaking = false;
         console.info('Cancel speaking');
@@ -179,10 +181,10 @@ async function speak(text) {
   
 }
 
-function speakSentence(text) {
+function speakSentence(text, language) {
 	var utterance = new SpeechSynthesisUtterance();
   utterance.text = text + '.';
-  utterance.lang = 'en';
+  utterance.lang = language || 'en';
   console.info('Start speaking', utterance.text);
   let interval;
   return new Promise(resolve => {
@@ -220,7 +222,7 @@ async function talkAboutLocation(article) {
     'page_title' : 'Article ' + article.title,
     'page_path': '/article/' + encodeURIComponent(article.title),
   });
-  return speak(article.content);
+  return speak(article.content, article.lang);
 }
 
 async function start() {
@@ -358,11 +360,6 @@ function initMap() {
   });
 }
 
-onunload = function() {
-  window.speechSynthesis.cancel();
-}
-navigator.serviceWorker.register("/sw.js");
-
 function timeout(time, message) {
   return new Promise((resolve, reject) => {
     setTimeout(() => reject(new Error('Timeout: ' + message)), time);
@@ -373,3 +370,27 @@ function fetchWithTimeout(url, paras) {
   return Promise.race([fetch(url, paras), 
                        timeout(15 * 1000, 'Fetch timed out for ' + url)]);
 }
+
+async function guessLang() {
+  const browserLang = navigator.language.split('-')[0];
+  const response = await fetchWithTimeout('https://' + browserLang + '.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles=Main_Page');
+  if (response.ok) {
+    lang = browserLang;
+    console.info('Set language to browser language', lang);
+  }
+}
+
+function init() {
+  onunload = function() {
+    window.speechSynthesis.cancel();
+  }
+  navigator.serviceWorker.register("/sw.js");
+  const l = new URLSearchParams(location.search).get('lang');
+  if (l) {
+    lang = encodeURIComponent(l);
+  } else {
+    guessLang();
+  }
+}
+
+init();
