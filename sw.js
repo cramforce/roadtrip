@@ -33,7 +33,7 @@ workbox.routing.registerRoute(
 
 workbox.routing.registerRoute(
   // Cache immutable files forever
-  /^https:\/\/en\.wikipedia\.org\//,
+  /^https:\/\/[^.]+\.wikipedia\.org\//,
   // Use the cache if it's available
   workbox.strategies.cacheFirst({
     cacheName: 'wiki-cache',

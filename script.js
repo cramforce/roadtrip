@@ -10,7 +10,6 @@ const state = {
   paused: false,
 };
 const pollSeconds = 30;
-let lang = 'en';
 
 const seen = {};
 
@@ -22,7 +21,37 @@ const interestingTypes = [
   'locality',
 ];
 
+const languageMap = {
+  'English (US)': {wikiTag: 'en', speechTag: 'en-US', welcomeMsg: 'Welcome to your road trip.'},
+  'English (UK)': {wikiTag: 'en', speechTag: 'en-GB', welcomeMsg: 'Welcome to your road trip.'},
+  'Français': {wikiTag: 'fr', speechTag: 'fr-FR', welcomeMsg: 'Bienvenue dans votre voyage.'},
+  'Cebuano': {wikiTag: 'ceb', speechTag: 'ceb', welcomeMsg: 'Welcome sa imong pagbiyahe sa dalan.'},
+  'Svenska': {wikiTag: 'sv', speechTag: 'sv-SE', welcomeMsg: 'Välkommen till din vägresa.'},
+  'Deutsch': {wikiTag: 'de', speechTag: 'de-DE', welcomeMsg: 'Willkommen zu Ihrem Roadtrip.'},
+  'Nederlands	': {wikiTag: 'nl', speechTag: 'nl-NL', welcomeMsg: 'Welkom bij je roadtrip.'},
+  'русский': {wikiTag: 'ru', speechTag: 'ru-RU', welcomeMsg: 'Добро пожаловать в свою поездку.'},
+  'Italiano': {wikiTag: 'it', speechTag: 'it-IT', welcomeMsg: 'Benvenuto nel tuo viaggio.'},
+  'Español': {wikiTag: 'es', speechTag: 'es', welcomeMsg: 'Bienvenido a tu viaje.'},
+  'Polski': {wikiTag: 'pl', speechTag: 'pl-PL', welcomeMsg: 'Witamy w podróży.'},
+  'Tiếng Việt': {wikiTag: 'vi', speechTag: 'vi-VN', welcomeMsg: 'Chào mừng bạn đến với chuyến đi của bạn.'},
+  '日本語': {wikiTag: 'ja', speechTag: 'ja-JP', welcomeMsg: 'あなたのロードトリップへようこそ。'},
+  '中文': {wikiTag: 'ch', speechTag: 'zh-CN', welcomeMsg: '欢迎来到您的公路旅行。'},
+  'Português (PT)': {wikiTag: 'pt', speechTag: 'pt-PT', welcomeMsg: 'Bem-vindo à sua viagem.'},
+  'Português (BR)': {wikiTag: 'pt', speechTag: 'pt-BR', welcomeMsg: 'Bem-vindo à sua viagem.'},
+  'українська': {wikiTag: 'uk', speechTag: 'uk-UA', welcomeMsg: 'Ласкаво просимо до дорожньої подорожі.'},
+  'فارسی': {wikiTag: 'fa', speechTag: 'fa-IR', welcomeMsg: 'به سفر جاده ای شما خوش آمدید'},
+  'српски': {wikiTag: 'sr', speechTag: 'sr-BA', welcomeMsg: 'Добродошли на путовање.'},
+  'Català': {wikiTag: 'ca', speechTag: 'ca-ES', welcomeMsg: 'Benvingut al vostre viatge.'},
+  'العربية': {wikiTag: 'ar', speechTag: 'ar', welcomeMsg: 'مرحبا بك في رحلتك'},
+};
+
 const testData = {"results":[{"address_components":[{"long_name":"2943","short_name":"2943","types":["street_number"]},{"long_name":"Sea View Parkway","short_name":"Sea View Pkwy","types":["route"]},{"long_name":"Alameda","short_name":"Alameda","types":["locality","political"]},{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]},{"long_name":"94502","short_name":"94502","types":["postal_code"]}],"formatted_address":"2943 Sea View Pkwy, Alameda, CA 94502, USA","geometry":{"bounds":{"northeast":{"lat":37.747773,"lng":-122.2450505},"southwest":{"lat":37.7476047,"lng":-122.2452242}},"location":{"lat":37.7476805,"lng":-122.2451375},"location_type":"ROOFTOP","viewport":{"northeast":{"lat":37.74903783029149,"lng":-122.2437883697085},"southwest":{"lat":37.74633986970849,"lng":-122.2464863302915}}},"place_id":"ChIJ-9VPsR-Ej4ARJuq2FoACiIY","types":["premise"]},{"address_components":[{"long_name":"101","short_name":"101","types":["street_number"]},{"long_name":"Norwich Road","short_name":"Norwich Rd","types":["route"]},{"long_name":"Alameda","short_name":"Alameda","types":["locality","political"]},{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]},{"long_name":"94502","short_name":"94502","types":["postal_code"]},{"long_name":"6438","short_name":"6438","types":["postal_code_suffix"]}],"formatted_address":"101 Norwich Rd, Alameda, CA 94502, USA","geometry":{"location":{"lat":37.747451,"lng":-122.2448222},"location_type":"RANGE_INTERPOLATED","viewport":{"northeast":{"lat":37.74879998029149,"lng":-122.2434732197085},"southwest":{"lat":37.74610201970849,"lng":-122.2461711802915}}},"place_id":"EiYxMDEgTm9yd2ljaCBSZCwgQWxhbWVkYSwgQ0EgOTQ1MDIsIFVTQSIaEhgKFAoSCTmGDwgfhI-AEavC7Eyr1njcEGU","types":["street_address"]},{"address_components":[{"long_name":"Alameda","short_name":"Alameda","types":["locality","political"]},{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"Alameda, CA, USA","geometry":{"bounds":{"northeast":{"lat":37.80062789999999,"lng":-122.2237791},"southwest":{"lat":37.70763,"lng":-122.3402809}},"location":{"lat":37.7652065,"lng":-122.2416355},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":37.80062789999999,"lng":-122.2237791},"southwest":{"lat":37.70763,"lng":-122.3402809}}},"place_id":"ChIJlRXP8tiAj4ARFG8BYM-Z_2Y","types":["locality","political"]},{"address_components":[{"long_name":"94502","short_name":"94502","types":["postal_code"]},{"long_name":"Alameda","short_name":"Alameda","types":["locality","political"]},{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"Alameda, CA 94502, USA","geometry":{"bounds":{"northeast":{"lat":37.756237,"lng":-122.2263139},"southwest":{"lat":37.7186201,"lng":-122.2691161}},"location":{"lat":37.7339032,"lng":-122.2483726},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":37.756237,"lng":-122.2263139},"southwest":{"lat":37.7186201,"lng":-122.2691161}}},"place_id":"ChIJIQuG5BWEj4ARyXWkkCwE3Tg","types":["postal_code"]},{"address_components":[{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"Alameda County, CA, USA","geometry":{"bounds":{"northeast":{"lat":37.9058239,"lng":-121.4692139},"southwest":{"lat":37.4545388,"lng":-122.3737821}},"location":{"lat":37.6016892,"lng":-121.7195459},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":37.9058239,"lng":-121.4692139},"southwest":{"lat":37.4545388,"lng":-122.3737821}}},"place_id":"ChIJWRd5NDfyj4ARc30TGxHHxmg","types":["administrative_area_level_2","political"]},{"address_components":[{"long_name":"San Francisco-Oakland-Fremont, CA","short_name":"San Francisco-Oakland-Fremont, CA","types":["political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"San Francisco-Oakland-Fremont, CA, CA, USA","geometry":{"bounds":{"northeast":{"lat":38.320945,"lng":-121.4692749},"southwest":{"lat":37.1073458,"lng":-123.024066}},"location":{"lat":37.8043507,"lng":-121.8107079},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":38.320945,"lng":-121.4692749},"southwest":{"lat":37.1073458,"lng":-123.024066}}},"place_id":"ChIJGUN8-q6Ij4ARZ1tA_OojshE","types":["political"]},{"address_components":[{"long_name":"San Francisco Metropolitan Area","short_name":"San Francisco Metropolitan Area","types":["political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"San Francisco Metropolitan Area, CA, USA","geometry":{"bounds":{"northeast":{"lat":38.320945,"lng":-121.4692139},"southwest":{"lat":37.0538579,"lng":-123.173825}},"location":{"lat":37.7749274,"lng":-122.4194254},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":38.320945,"lng":-121.4692139},"southwest":{"lat":37.0538579,"lng":-123.173825}}},"place_id":"ChIJE156BviCj4ARKrqKa5lkEu4","types":["political"]},{"address_components":[{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"California, USA","geometry":{"bounds":{"northeast":{"lat":42.0095169,"lng":-114.131211},"southwest":{"lat":32.528832,"lng":-124.482003}},"location":{"lat":36.778261,"lng":-119.4179324},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":42.0095169,"lng":-114.131211},"southwest":{"lat":32.528832,"lng":-124.482003}}},"place_id":"ChIJPV4oX_65j4ARVW8IJ6IJUYs","types":["administrative_area_level_1","political"]},{"address_components":[{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"United States","geometry":{"bounds":{"northeast":{"lat":71.5388001,"lng":-66.885417},"southwest":{"lat":18.7763,"lng":170.5957}},"location":{"lat":37.09024,"lng":-95.712891},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":49.38,"lng":-66.94},"southwest":{"lat":25.82,"lng":-124.39}}},"place_id":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw","types":["country","political"]}],"status":"OK"}
+
+function wikiUrl(path, api, mobile) {
+  let url = 'https://' + state.lang.wikiTag;
+  if (mobile) url += '.m';
+  return url + '.wikipedia.org/' + (api ? 'w/api.php?' : 'wiki/')
+}
 
 function startWatchLocation() {
   return new Promise(resolve => {
@@ -75,8 +104,7 @@ function processResult(results) {
 }
 
 async function searchWikipedia(term) {
-  const response = await fetchWithTimeout('https://' + lang + '.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&limit=1&search='
-      + encodeURIComponent(term));
+  const response = await fetchWithTimeout(wikiUrl('action=opensearch&format=json&origin=*&limit=1&search=' + encodeURIComponent(term), true));
   if (!response.ok) {
     console.error('Wikipedia call failed', response)
     throw new Error('Wikipedia search is down');
@@ -98,8 +126,7 @@ async function searchWikipedia(term) {
 
 async function getContent(title) {
   console.info('Getting content');
-  const response = await fetchWithTimeout('https://' + lang + '.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles='
-      + encodeURIComponent(title));
+  const response = await fetchWithTimeout(wikiUrl('redirects=true&format=json&origin=*&action=query&prop=extracts&titles=' + encodeURIComponent(title), true));
   if (!response.ok) {
     console.error('Wikipedia content call failed', response)
     throw new Error('Wikipedia content is down');
@@ -109,7 +136,7 @@ async function getContent(title) {
   console.info('Page', page)
   seen[page.title] = true;
   return {
-    url: 'https://' + lang + '.wikipedia.org/wiki/' + encodeURIComponent(page.title),
+    url: wikiUrl(encodeURIComponent(page.title), false),
     title: page.title,
     content: simpleHtmlToText(page.extract.trim()),
     lang: lang
@@ -136,8 +163,7 @@ async function getArticleForLocation() {
 
 async function getNearbyArticle() {
   console.info('Finding nearby article');
-  const response = await fetchWithTimeout('https://' + lang + '.m.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=geosearch&ggsradius=10000&ggsnamespace=0&ggslimit=50&formatversion=2&'
-      + 'ggscoord=' + encodeURIComponent(position.coords.latitude) + '%7C' + encodeURIComponent(position.coords.longitude));
+  const response = await fetchWithTimeout(wikiUrl('action=query&format=json&origin=*&generator=geosearch&ggsradius=10000&ggsnamespace=0&ggslimit=50&formatversion=2&ggscoord=' + encodeURIComponent(position.coords.latitude) + '%7C' + encodeURIComponent(position.coords.longitude), true, true));
   if (!response.ok) {
     console.error('Wikipedia nearby failed', response)
     throw new Error('Wikipedia nearby is down');
@@ -184,7 +210,7 @@ async function speak(text, language) {
 function speakSentence(text, language) {
 	var utterance = new SpeechSynthesisUtterance();
   utterance.text = text + '.';
-  utterance.lang = language || 'en';
+  utterance.lang = language;
   console.info('Start speaking', utterance.text);
   let interval;
   return new Promise(resolve => {
@@ -228,6 +254,7 @@ async function talkAboutLocation(article) {
 async function start() {
   state.playing = true;
   state.loading = true;
+  state.lang = languageMap[$('language_inner_select').value];
   state.status = 'Finding your location.'
   render();
   const s = startWatchLocation();
@@ -235,7 +262,7 @@ async function start() {
     message: 'Please make sure your volume is turned up!',
     timeout: 10000,
   });
-  await speak('Welcome to your road trip.\n\n');
+  await speak(state.lang.welcomeMsg + '\n\n', state.lang.speechTag);
   await s;
   next();
 }
@@ -248,7 +275,7 @@ async function next() {
   render();
   gtag('config', 'UA-121987888-1', {
     'page_title' : 'Next',
-    'page_path': '/next/' + lang,
+    'page_path': '/next/' + state.lang.speechTag,
   });
   try {
     console.info('Finding article.');
@@ -298,6 +325,7 @@ function skipParagraph() {
 
 function render() {
   $('html_start').style.display = display(!state.playing);
+  $('language_select').style.display = display(!state.playing);
   $('html_pause').style.display = display(!state.loading && state.playing && !state.paused);
   $('html_play').style.display = display(!state.loading && state.playing && state.paused);
   $('html_next').style.display = display(!state.loading && state.playing);
@@ -360,6 +388,40 @@ function initMap() {
   });
 }
 
+function initLanguageSelect(selected) {
+  var fragment = document.createDocumentFragment();
+
+  for (let language of Object.keys(languageMap)) {
+    var opt = document.createElement('option');
+    opt.innerHTML = language;
+    opt.value = language;
+    fragment.appendChild(opt);
+  }
+
+  $('language_inner_select').appendChild(fragment);
+  $('language_inner_select').value = selected;
+}
+
+function selectLang(langTag) {
+  let selected = null;
+  for (var langValue in languageMap) {
+    if (languageMap[langValue].speechTag === langTag || languageMap[langValue].wikiTag === langTag) {
+      selected = langValue;
+      break;
+    }
+  }
+
+  if (!selected) {
+    selected = 'Browser Language (' + langTag + ')';
+    languageMap[selected] = {
+      speechTag: langTag,
+      wikiTag: langTag.split('-')[0],
+      welcomeMsg: ''
+    };
+  }
+  initLanguageSelect(selected);
+}
+
 function timeout(time, message) {
   return new Promise((resolve, reject) => {
     setTimeout(() => reject(new Error('Timeout: ' + message)), time);
@@ -372,11 +434,12 @@ function fetchWithTimeout(url, paras) {
 }
 
 async function guessLang() {
-  const browserLang = navigator.language.split('-')[0];
-  const response = await fetchWithTimeout('https://' + browserLang + '.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles=Main_Page');
+  const langTag = navigator.language;
+  const wikiTag = langTag.split('-')[0];
+  const response = await fetchWithTimeout('https://' + wikiTag + '.wikipedia.org/w/api.php?redirects=true&format=json&origin=*&action=query&prop=extracts&titles=Main_Page');
   if (response.ok) {
-    lang = browserLang;
-    console.info('Set language to browser language', lang);
+    console.info('Set language to browser language', langTag);
+    return langTag;
   }
 }
 
@@ -385,12 +448,12 @@ function init() {
     window.speechSynthesis.cancel();
   }
   navigator.serviceWorker.register("/sw.js");
+
   const l = new URLSearchParams(location.search).get('lang');
   if (l) {
-    lang = encodeURIComponent(l);
-  } else {
-    guessLang();
+    selectLang(encodeURIComponent(l));
+  }
+  else {
+    guessLang().then(selectLang);
   }
 }
-
-init();

@@ -32,7 +32,7 @@
     <meta name="description" content="This app will read to you about the places and points of interest you drive by.">
   </head>  
   
-<body>
+<body onload="init()">
 <!-- Always shows a header, even in smaller screens. -->
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
@@ -58,6 +58,10 @@
   <main class="mdl-layout__content">
     <div class="page-content">
       <h3 id="html_title">This app will read to you about the places and points of interest you drive by.</h3>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="language_select">
+        <select class="mdl-textfield__input" id="language_inner_select" name="language_inner_select">
+        </select>
+      </div>
       <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" onclick="start()" id="html_start">
         Start the road trip
       </button>
