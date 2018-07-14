@@ -50,7 +50,7 @@ const testData = {"results":[{"address_components":[{"long_name":"2943","short_n
 function wikiUrl(path, api, mobile) {
   let url = 'https://' + state.lang.wikiTag;
   if (mobile) url += '.m';
-  return url + '.wikipedia.org/' + (api ? 'w/api.php?' : 'wiki/')
+  return url + '.wikipedia.org/' + (api ? 'w/api.php?' : 'wiki/') + path
 }
 
 function startWatchLocation() {
@@ -139,7 +139,7 @@ async function getContent(title) {
     url: wikiUrl(encodeURIComponent(page.title), false),
     title: page.title,
     content: simpleHtmlToText(page.extract.trim()),
-    lang: lang
+    lang: state.lang.speechTag,
   };
 }
 
@@ -457,3 +457,5 @@ function init() {
     guessLang().then(selectLang);
   }
 }
+
+init();
