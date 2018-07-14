@@ -130,7 +130,7 @@ async function searchWikipedia(term) {
 
 async function getContent(title) {
   console.info('Getting content');
-  const response = await fetchWithTimeout(wikiUrl('redirects=true&format=json&origin=*&action=query&prop=extracts&titles=' + encodeURIComponent(title), true));
+  const response = await fetchWithTimeout(wikiUrl('redirects=true&format=json&origin=*&action=query&prop=extracts|coordinates&titles=' + encodeURIComponent(title), true));
   if (!response.ok) {
     console.error('Wikipedia content call failed', response)
     throw new Error('Wikipedia content is down');
@@ -142,8 +142,13 @@ async function getContent(title) {
   return {
     url: wikiUrl(encodeURIComponent(page.title), false),
     title: page.title,
+    label: page.title,
     content: simpleHtmlToText(page.extract.trim()),
     lang: state.lang.speechTag,
+    coordinates: page.coordinates[0] ? {
+      lat: page.coordinates[0].lat,
+      lng: page.coordinates[0].lon,
+    } : null,
   };
 }
 
@@ -252,6 +257,14 @@ async function talkAboutLocation(article) {
     'page_title' : 'Article ' + article.title,
     'page_path': '/article/' + encodeURIComponent(article.title),
   });
+  if (article.coordinates && map) {
+    article.marker = new google.maps.Marker({
+      position: article.coordinates,
+      map: map,
+      title: article.title,
+      //label: article.title,
+    });
+  }
   return speak(article.content, article.lang);
 }
 
@@ -381,7 +394,7 @@ function initMap() {
     center: startLoc,
     zoom: 11
   });
-  map.centerMarker = new google.maps.Marker({
+  const centerMarker = new google.maps.Marker({
     position: startLoc,
     map: map,
     title: 'Current Location'
@@ -393,7 +406,7 @@ function initMap() {
         latitude: map.getCenter().lat(),
       }
     };
-    map.centerMarker.setPosition({
+    centerMarker.setPosition({
       lat: map.getCenter().lat(), 
       lng: map.getCenter().lng()
     });
