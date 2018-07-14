@@ -45,8 +45,6 @@ const languageMap = {
   'العربية': {wikiTag: 'ar', speechTag: 'ar', welcomeMsg: 'مرحبا بك في رحلتك'},
 };
 
-const testData = {"results":[{"address_components":[{"long_name":"2943","short_name":"2943","types":["street_number"]},{"long_name":"Sea View Parkway","short_name":"Sea View Pkwy","types":["route"]},{"long_name":"Alameda","short_name":"Alameda","types":["locality","political"]},{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]},{"long_name":"94502","short_name":"94502","types":["postal_code"]}],"formatted_address":"2943 Sea View Pkwy, Alameda, CA 94502, USA","geometry":{"bounds":{"northeast":{"lat":37.747773,"lng":-122.2450505},"southwest":{"lat":37.7476047,"lng":-122.2452242}},"location":{"lat":37.7476805,"lng":-122.2451375},"location_type":"ROOFTOP","viewport":{"northeast":{"lat":37.74903783029149,"lng":-122.2437883697085},"southwest":{"lat":37.74633986970849,"lng":-122.2464863302915}}},"place_id":"ChIJ-9VPsR-Ej4ARJuq2FoACiIY","types":["premise"]},{"address_components":[{"long_name":"101","short_name":"101","types":["street_number"]},{"long_name":"Norwich Road","short_name":"Norwich Rd","types":["route"]},{"long_name":"Alameda","short_name":"Alameda","types":["locality","political"]},{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]},{"long_name":"94502","short_name":"94502","types":["postal_code"]},{"long_name":"6438","short_name":"6438","types":["postal_code_suffix"]}],"formatted_address":"101 Norwich Rd, Alameda, CA 94502, USA","geometry":{"location":{"lat":37.747451,"lng":-122.2448222},"location_type":"RANGE_INTERPOLATED","viewport":{"northeast":{"lat":37.74879998029149,"lng":-122.2434732197085},"southwest":{"lat":37.74610201970849,"lng":-122.2461711802915}}},"place_id":"EiYxMDEgTm9yd2ljaCBSZCwgQWxhbWVkYSwgQ0EgOTQ1MDIsIFVTQSIaEhgKFAoSCTmGDwgfhI-AEavC7Eyr1njcEGU","types":["street_address"]},{"address_components":[{"long_name":"Alameda","short_name":"Alameda","types":["locality","political"]},{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"Alameda, CA, USA","geometry":{"bounds":{"northeast":{"lat":37.80062789999999,"lng":-122.2237791},"southwest":{"lat":37.70763,"lng":-122.3402809}},"location":{"lat":37.7652065,"lng":-122.2416355},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":37.80062789999999,"lng":-122.2237791},"southwest":{"lat":37.70763,"lng":-122.3402809}}},"place_id":"ChIJlRXP8tiAj4ARFG8BYM-Z_2Y","types":["locality","political"]},{"address_components":[{"long_name":"94502","short_name":"94502","types":["postal_code"]},{"long_name":"Alameda","short_name":"Alameda","types":["locality","political"]},{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"Alameda, CA 94502, USA","geometry":{"bounds":{"northeast":{"lat":37.756237,"lng":-122.2263139},"southwest":{"lat":37.7186201,"lng":-122.2691161}},"location":{"lat":37.7339032,"lng":-122.2483726},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":37.756237,"lng":-122.2263139},"southwest":{"lat":37.7186201,"lng":-122.2691161}}},"place_id":"ChIJIQuG5BWEj4ARyXWkkCwE3Tg","types":["postal_code"]},{"address_components":[{"long_name":"Alameda County","short_name":"Alameda County","types":["administrative_area_level_2","political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"Alameda County, CA, USA","geometry":{"bounds":{"northeast":{"lat":37.9058239,"lng":-121.4692139},"southwest":{"lat":37.4545388,"lng":-122.3737821}},"location":{"lat":37.6016892,"lng":-121.7195459},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":37.9058239,"lng":-121.4692139},"southwest":{"lat":37.4545388,"lng":-122.3737821}}},"place_id":"ChIJWRd5NDfyj4ARc30TGxHHxmg","types":["administrative_area_level_2","political"]},{"address_components":[{"long_name":"San Francisco-Oakland-Fremont, CA","short_name":"San Francisco-Oakland-Fremont, CA","types":["political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"San Francisco-Oakland-Fremont, CA, CA, USA","geometry":{"bounds":{"northeast":{"lat":38.320945,"lng":-121.4692749},"southwest":{"lat":37.1073458,"lng":-123.024066}},"location":{"lat":37.8043507,"lng":-121.8107079},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":38.320945,"lng":-121.4692749},"southwest":{"lat":37.1073458,"lng":-123.024066}}},"place_id":"ChIJGUN8-q6Ij4ARZ1tA_OojshE","types":["political"]},{"address_components":[{"long_name":"San Francisco Metropolitan Area","short_name":"San Francisco Metropolitan Area","types":["political"]},{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"San Francisco Metropolitan Area, CA, USA","geometry":{"bounds":{"northeast":{"lat":38.320945,"lng":-121.4692139},"southwest":{"lat":37.0538579,"lng":-123.173825}},"location":{"lat":37.7749274,"lng":-122.4194254},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":38.320945,"lng":-121.4692139},"southwest":{"lat":37.0538579,"lng":-123.173825}}},"place_id":"ChIJE156BviCj4ARKrqKa5lkEu4","types":["political"]},{"address_components":[{"long_name":"California","short_name":"CA","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"California, USA","geometry":{"bounds":{"northeast":{"lat":42.0095169,"lng":-114.131211},"southwest":{"lat":32.528832,"lng":-124.482003}},"location":{"lat":36.778261,"lng":-119.4179324},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":42.0095169,"lng":-114.131211},"southwest":{"lat":32.528832,"lng":-124.482003}}},"place_id":"ChIJPV4oX_65j4ARVW8IJ6IJUYs","types":["administrative_area_level_1","political"]},{"address_components":[{"long_name":"United States","short_name":"US","types":["country","political"]}],"formatted_address":"United States","geometry":{"bounds":{"northeast":{"lat":71.5388001,"lng":-66.885417},"southwest":{"lat":18.7763,"lng":170.5957}},"location":{"lat":37.09024,"lng":-95.712891},"location_type":"APPROXIMATE","viewport":{"northeast":{"lat":49.38,"lng":-66.94},"southwest":{"lat":25.82,"lng":-124.39}}},"place_id":"ChIJCzYy5IS16lQRQrfeQ5K5Oxw","types":["country","political"]}],"status":"OK"}
-
 function wikiUrl(path, api, mobile) {
   let url = 'https://' + state.lang.wikiTag;
   if (mobile) url += '.m';
@@ -64,6 +62,12 @@ function startWatchLocation() {
         }
       }
       resolve();
+    }, error => {
+      console.error('WatchPosition error.', error.message, error);
+      alert('Failed to find your current location.')
+    }, {
+      enableHighAccuracy: false,
+      maximumAge: 15000,
     });
   });
 }
@@ -372,9 +376,15 @@ function html(text) {
 }
 
 function initMap() {
+  const startLoc = {lat: -34.397, lng: 150.644};
   map = new google.maps.Map($('map'), {
-    center: {lat: -34.397, lng: 150.644},
+    center: startLoc,
     zoom: 11
+  });
+  map.centerMarker = new google.maps.Marker({
+    position: startLoc,
+    map: map,
+    title: 'Current Location'
   });
   map.addListener('center_changed', e => {
     position = {
@@ -383,6 +393,10 @@ function initMap() {
         latitude: map.getCenter().lat(),
       }
     };
+    map.centerMarker.setPosition({
+      lat: map.getCenter().lat(), 
+      lng: map.getCenter().lng()
+    });
     console.info('Map position', position);
     manualPosition = true;
   });
